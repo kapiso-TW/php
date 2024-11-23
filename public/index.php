@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $page = -1;
         }
     }
-    
+
     if (isset($name) && isset($mes)) {
         $data[] = ['name' => $name, 'message' => $mes];
         file_put_contents('data.json', json_encode($data));
