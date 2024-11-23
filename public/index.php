@@ -6,22 +6,25 @@ $data = json_decode($data, true);
 $mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($password)) {
-        if ($password == '1030') {
-            $name = 'Sally';
-            $page = 1;
-        } elseif ($password == 'simple') {
-            $name = 'XXXXX';
-            $page = 1;
-        } else {
-            $page = -1;
+    if($page==0 || $page==-1){
+        if (isset($password)) {
+            if ($password == '1030') {
+                $name = 'Sally';
+                $page = 1;
+            } elseif ($password == 'simple') {
+                $name = 'XXXXX';
+                $page = 1;
+            } else {
+                $page = -1;
+            }
+        }
+    }elseif($page==1){
+        if (isset($name) && isset($mes)) {
+            $data[] = ['name' => $name, 'message' => $mes];
+            file_put_contents('data.json', json_encode($data));
         }
     }
-
-    if (isset($name) && isset($mes)) {
-        $data[] = ['name' => $name, 'message' => $mes];
-        file_put_contents('data.json', json_encode($data));
-    }
+    
 }
 ?>
 
