@@ -1,38 +1,52 @@
 <?php
-session_start(); // Session on
+session_start(); // Start the session
 
-// set var
-$password = @isset($_POST['password']) ? $_POST['password'] : null;
-$data = @file_get_contents('data.json');
-$data = @json_decode($data, true);
-$mes = @isset($_POST['messenger']) ? $_POST['messenger'] : null;
+// Define the temporary storage path
+define('CHAT_FILE', '/tmp/chat_data.json');
 
-// clear page
-if (!isset($_SESSION['page'])) {
-    $_SESSION['page'] = 0; // page = login
+// Initialize the file data
+if (!file_exists(CHAT_FILE)) {
+    @file_put_contents(CHAT_FILE, json_encode([])); // Create an empty JSON file if it doesn't exist
 }
 
+// Get POST data
+$password = isset($_POST['password']) ? $_POST['password'] : null;
+$data = @json_decode(file_get_contents(CHAT_FILE), true); // Load data from /tmp
+$mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
+
+// Initialize page state
+if (!isset($_SESSION['page'])) {
+    $_SESSION['page'] = 0; // Default to login page
+}
+
+// Handle POST request
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // login
-        if (isset($password)) {
-            if ($password == '1030') {
+    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // Login handling
+        if (!empty($password)) {
+            if ($password === '1030') {
                 $_SESSION['name'] = 'Sally';
-                $_SESSION['page'] = 1; // success login
-            } elseif ($password == 'simple') {
+                $_SESSION['page'] = 1; // Login successful
+            } elseif ($password === 'simple') {
                 $_SESSION['name'] = 'XXXXX';
-                $_SESSION['page'] = 1; // success login
+                $_SESSION['page'] = 1; // Login successful
             } else {
-                $_SESSION['page'] = -1; // wrong password
+                $_SESSION['page'] = -1; // Login failed
             }
         }
-    } elseif ($_SESSION['page'] == 1) { // send mes
-        if (isset($_SESSION['name']) && isset($mes)) {
-            $data[] = ['name' => $_SESSION['name'], 'message' => $mes, 'bool' => "1"];
-            file_put_contents('data.json', json_encode($data)); // save in data.json
+    } elseif ($_SESSION['page'] == 1) { // Message sending
+        if (isset($_SESSION['name']) && !empty($mes)) {
+            $data[] = [
+                'name' => $_SESSION['name'],
+                'message' => $mes,
+                'bool' => "1"
+            ];
+            file_put_contents(CHAT_FILE, json_encode($data)); // Save to /tmp directory
         }
     }
 }
-$page = $_SESSION['page']; // ensure page is currect
+
+// Ensure the current page state is correct
+$page = $_SESSION['page'];
 ?>
 
 <!DOCTYPE html>
@@ -46,12 +60,12 @@ $page = $_SESSION['page']; // ensure page is currect
 </head>
 
 <body>
-    <!--background start-->
+    <!-- Background start -->
     <div class="stars"></div>
-    <!--background end-->
+    <!-- Background end -->
 
     <?php if ($page == 0 || $page == -1) { ?>
-        <!--login page start-->
+        <!-- Login page -->
         <div class="container">
             <div class="form-control">
                 <form method="POST">
@@ -75,23 +89,19 @@ $page = $_SESSION['page']; // ensure page is currect
                 <p style="color: red;"><?= "!!! Wrong password !!!" ?></p>
             <?php } ?>
         </div>
-        <!--login page end-->
     <?php } ?>
 
-    <!-------------------------------------------------------------------------------------------------->
-
     <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
-        <!--unlock page start-->
+        <!-- Chat page -->
         <div>
             <div class="chat-container">
-                <!-- chat panel -->
                 <br>
                 <div class="chat-box">
                     <?php
                     foreach ($data as $msgs) {
                         if (isset($msgs['bool']) && $msgs['bool'] == '1') {
                             $name = htmlentities($msgs['name']);
-                            $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error'; // check 'message' btn is exist or not
+                            $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error'; 
                             echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
                         }
                     }
@@ -110,9 +120,7 @@ $page = $_SESSION['page']; // ensure page is currect
                     <button type="submit">Logout</button>
                 </form>
             </div>
-
         </div>
-        <!--unlock page end-->
     <?php } ?>
 </body>
 
