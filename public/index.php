@@ -1,31 +1,38 @@
 <?php
+session_start(); // 啟用 Session
+
+// 初始化變數
 $password = isset($_POST['password']) ? $_POST['password'] : null;
-$page = 0;
 $data = file_get_contents('data.json');
 $data = json_decode($data, true);
 $mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
 
+// 初始化頁面狀態
+if (!isset($_SESSION['page'])) {
+    $_SESSION['page'] = 0; // 初始頁面為登入頁面
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if($page==0 || $page==-1){
+    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // 處理登入邏輯
         if (isset($password)) {
             if ($password == '1030') {
-                $name = 'Sally';
-                $page = 1;
+                $_SESSION['name'] = 'Sally';
+                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
             } elseif ($password == 'simple') {
-                $name = 'XXXXX';
-                $page = 1;
+                $_SESSION['name'] = 'XXXXX';
+                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
             } else {
-                $page = -1;
+                $_SESSION['page'] = -1; // 密碼錯誤，顯示錯誤訊息
             }
         }
-    }elseif($page==1){
-        if (isset($name) && isset($mes)) {
-            $data[] = ['name' => $name, 'message' => $mes];
-            file_put_contents('data.json', json_encode($data));
+    } elseif ($_SESSION['page'] == 1) { // 處理訊息發送邏輯
+        if (isset($_SESSION['name']) && isset($mes)) {
+            $data[] = ['name' => $_SESSION['name'], 'message' => $mes, 'bool'=> "1"];
+            file_put_contents('data.json', json_encode($data)); // 保存訊息到 data.json
         }
     }
-    
 }
+$page = $_SESSION['page']; // 確保頁面狀態正確
 ?>
 
 <!DOCTYPE html>
@@ -73,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <!-------------------------------------------------------------------------------------------------->
 
-    <?php if ($page == 1 && isset($name)) { ?>
+    <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
         <!--unlock page start-->
         <div class="chat-container">
             <!-- chat panel -->
@@ -81,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php
                 foreach ($data as $msgs) {
                     $name = htmlentities($msgs['name']);
-                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // 检查是否存在 'message' 键
+                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // 檢查是否存在 'message' 鍵
                     echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
                 }
                 ?>
@@ -94,6 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </form>
             </div>
         </div>
+        <form method="POST" action="logout.php">
+            <button type="submit">Logout</button>
+        </form>
         <!--unlock page end-->
     <?php } ?>
 </body>
