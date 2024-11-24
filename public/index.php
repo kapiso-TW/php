@@ -1,52 +1,9 @@
 <?php
-session_start(); // Start the session
+error_reporting(0);  // dedug off
+ini_set('display_errors', 0);  // No error
+session_start();
 
-// Define the temporary storage path
-define('CHAT_FILE', '/tmp/chat_data.json');
-
-// Initialize the file data
-if (!file_exists(CHAT_FILE)) {
-    @file_put_contents(CHAT_FILE, json_encode([])); // Create an empty JSON file if it doesn't exist
-}
-
-// Get POST data
-$password = isset($_POST['password']) ? $_POST['password'] : null;
-$data = @json_decode(file_get_contents(CHAT_FILE), true); // Load data from /tmp
-$mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
-
-// Initialize page state
-if (!isset($_SESSION['page'])) {
-    $_SESSION['page'] = 0; // Default to login page
-}
-
-// Handle POST request
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // Login handling
-        if (!empty($password)) {
-            if ($password === '1030') {
-                $_SESSION['name'] = 'Sally';
-                $_SESSION['page'] = 1; // Login successful
-            } elseif ($password === 'simple') {
-                $_SESSION['name'] = 'XXXXX';
-                $_SESSION['page'] = 1; // Login successful
-            } else {
-                $_SESSION['page'] = -1; // Login failed
-            }
-        }
-    } elseif ($_SESSION['page'] == 1) { // Message sending
-        if (isset($_SESSION['name']) && !empty($mes)) {
-            $data[] = [
-                'name' => $_SESSION['name'],
-                'message' => $mes,
-                'bool' => "1"
-            ];
-            file_put_contents(CHAT_FILE, json_encode($data)); // Save to /tmp directory
-        }
-    }
-}
-
-// Ensure the current page state is correct
-$page = $_SESSION['page'];
+$page = 0;
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +14,7 @@ $page = $_SESSION['page'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>A Page?</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -96,30 +54,26 @@ $page = $_SESSION['page'];
         <div>
             <div class="chat-container">
                 <br>
-                <div class="chat-box">
+                <div class="chat-box" id="chat-box">
                     <?php
-                    foreach ($data as $msgs) {
-
+                    foreach ($data as $index => $msgs) {
                         if (isset($msgs['bool']) && $msgs['bool'] == '1') {
-                            
                             $name = htmlentities($msgs['name']);
                             $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error';
                             echo "<div><div class='name'>$name";
 
                             if (isset($name) && $name == $msgs['name']) {
                                 // Only show the button if the names match
-                                echo "<button class='delete-btn'>Delete</button>";
+                                echo "<button class='delete-btn' data-index='$index'>Delete</button>";
                             }
                             echo "</div><div class='message'>$msg</div><br></div>";
-
-
                         }
                     }
                     ?>
                 </div>
 
                 <div class="input-area" class="container">
-                    <form method="POST">
+                    <form method="POST" id="message-form">
                         <input id="message" name="messenger" placeholder="Type a message here" required>
                         <button type="submit" id="send-btn" class="send">Send</button>
                     </form>
@@ -132,6 +86,54 @@ $page = $_SESSION['page'];
             </div>
         </div>
     <?php } ?>
+
+    <script>
+        // Function to load new messages
+        function loadMessages() {
+            $.ajax({
+                url: 'get_messages.php', // PHP file to get messages
+                method: 'GET',
+                success: function (response) {
+                    $('#chat-box').html(response); // Update the chat-box with new messages
+                }
+            });
+        }
+
+        // Load messages every 3 seconds
+        setInterval(loadMessages, 3000);
+
+        // Submit message via AJAX
+        $('#message-form').submit(function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            var message = $('#message').val();
+
+            $.ajax({
+                url: 'send_message.php', // PHP file to handle message sending
+                method: 'POST',
+                data: { messenger: message },
+                success: function (response) {
+                    $('#message').val(''); // Clear the input field after sending
+                    loadMessages(); // Load the latest messages after sending
+                }
+            });
+        });
+
+        // Delete message via AJAX
+        $(document).on('click', '.delete-btn', function () {
+            var messageIndex = $(this).data('index'); // Get the message index to delete
+
+            $.ajax({
+                url: 'delete_message.php',
+                method: 'POST',
+                data: { index: messageIndex }, // Send the index to the server
+                success: function (response) {
+                    alert(response); // Show success or error message
+                    loadMessages(); // Reload the chat messages
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
