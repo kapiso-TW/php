@@ -99,10 +99,20 @@ $page = $_SESSION['page'];
                 <div class="chat-box">
                     <?php
                     foreach ($data as $msgs) {
+
                         if (isset($msgs['bool']) && $msgs['bool'] == '1') {
+                            
                             $name = htmlentities($msgs['name']);
-                            $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error'; 
-                            echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
+                            $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error';
+                            echo "<div><div class='name'>$name";
+
+                            if (isset($name) && $name == $msgs['name']) {
+                                // Only show the button if the names match
+                                echo "<button class='delete-btn'>Delete</button>";
+                            }
+                            echo "</div><div class='message'>$msg</div><br></div>";
+
+
                         }
                     }
                     ?>
