@@ -1,38 +1,38 @@
 <?php
-session_start(); // 啟用 Session
+session_start(); // Session on
 
-// 初始化變數
-$password = isset($_POST['password']) ? $_POST['password'] : null;
-$data = file_get_contents('data.json');
-$data = json_decode($data, true);
-$mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
+// set var
+$password = @isset($_POST['password']) ? $_POST['password'] : null;
+$data = @file_get_contents('data.json');
+$data = @json_decode($data, true);
+$mes = @isset($_POST['messenger']) ? $_POST['messenger'] : null;
 
-// 初始化頁面狀態
+// clear page
 if (!isset($_SESSION['page'])) {
-    $_SESSION['page'] = 0; // 初始頁面為登入頁面
+    $_SESSION['page'] = 0; // page = login
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // 處理登入邏輯
+    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // login
         if (isset($password)) {
             if ($password == '1030') {
                 $_SESSION['name'] = 'Sally';
-                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
+                $_SESSION['page'] = 1; // success login
             } elseif ($password == 'simple') {
                 $_SESSION['name'] = 'XXXXX';
-                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
+                $_SESSION['page'] = 1; // success login
             } else {
-                $_SESSION['page'] = -1; // 密碼錯誤，顯示錯誤訊息
+                $_SESSION['page'] = -1; // wrong password
             }
         }
-    } elseif ($_SESSION['page'] == 1) { // 處理訊息發送邏輯
+    } elseif ($_SESSION['page'] == 1) { // send mes
         if (isset($_SESSION['name']) && isset($mes)) {
-            $data[] = ['name' => $_SESSION['name'], 'message' => $mes, 'bool'=> "1"];
-            file_put_contents('data.json', json_encode($data)); // 保存訊息到 data.json
+            $data[] = ['name' => $_SESSION['name'], 'message' => $mes, 'bool' => "1"];
+            file_put_contents('data.json', json_encode($data)); // save in data.json
         }
     }
 }
-$page = $_SESSION['page']; // 確保頁面狀態正確
+$page = $_SESSION['page']; // ensure page is currect
 ?>
 
 <!DOCTYPE html>
@@ -82,28 +82,36 @@ $page = $_SESSION['page']; // 確保頁面狀態正確
 
     <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
         <!--unlock page start-->
-        <div class="chat-container">
-            <!-- chat panel -->
-            <div class="chat-box">
-                <?php
-                foreach ($data as $msgs) {
-                    $name = htmlentities($msgs['name']);
-                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // 檢查是否存在 'message' 鍵
-                    echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
-                }
-                ?>
-            </div>
+        <div>
+            <div class="chat-container">
+                <!-- chat panel -->
+                <br>
+                <div class="chat-box">
+                    <?php
+                    foreach ($data as $msgs) {
+                        if (isset($msgs['bool']) && $msgs['bool'] == '1') {
+                            $name = htmlentities($msgs['name']);
+                            $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error'; // check 'message' btn is exist or not
+                            echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
+                        }
+                    }
+                    ?>
+                </div>
 
-            <div class="input-area">
-                <form method="POST">
-                    <input id="message" name="messenger" placeholder="Type a message here" required>
-                    <button type="submit" id="send-btn">Send</button>
+                <div class="input-area" class="container">
+                    <form method="POST">
+                        <input id="message" name="messenger" placeholder="Type a message here" required>
+                        <button type="submit" id="send-btn" class="send">Send</button>
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <form method="POST" action="logout.php">
+                    <button type="submit">Logout</button>
                 </form>
             </div>
+
         </div>
-        <form method="POST" action="logout.php">
-            <button type="submit">Logout</button>
-        </form>
         <!--unlock page end-->
     <?php } ?>
 </body>
