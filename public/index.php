@@ -1,25 +1,38 @@
 <?php
-error_reporting(0); // Debug off
-ini_set('display_errors', 0); // No error
-session_start();
+session_start(); // 啟用 Session
 
-// 初始化 $page
-if (!isset($page)) {
-    $page = 0;
+// 初始化變數
+$password = isset($_POST['password']) ? $_POST['password'] : null;
+$data = file_get_contents('data.json');
+$data = json_decode($data, true);
+$mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
+
+// 初始化頁面狀態
+if (!isset($_SESSION['page'])) {
+    $_SESSION['page'] = 0; // 初始頁面為登入頁面
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-    $password = $_POST['password'];
-    if ($password === '1030') {
-        $_SESSION['name'] = 'Sally';
-        $page = 1;
-    } elseif ($password === 'simple') {
-        $_SESSION['name'] = 'XXXX';
-        $page = 1;
-    } else {
-        $page = -1;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // 處理登入邏輯
+        if (isset($password)) {
+            if ($password == '1030') {
+                $_SESSION['name'] = 'Sally';
+                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
+            } elseif ($password == 'simple') {
+                $_SESSION['name'] = 'XXXXX';
+                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
+            } else {
+                $_SESSION['page'] = -1; // 密碼錯誤，顯示錯誤訊息
+            }
+        }
+    } elseif ($_SESSION['page'] == 1) { // 處理訊息發送邏輯
+        if (isset($_SESSION['name']) && isset($mes)) {
+            $data[] = ['name' => $_SESSION['name'], 'message' => $mes];
+            file_put_contents('data.json', json_encode($data)); // 保存訊息到 data.json
+        }
     }
 }
+$page = $_SESSION['page']; // 確保頁面狀態正確
 ?>
 
 <!DOCTYPE html>
@@ -30,16 +43,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>A Page?</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
-    <!-- Background start -->
+    <!--background start-->
     <div class="stars"></div>
-    <!-- Background end -->
+    <!--background end-->
 
     <?php if ($page == 0 || $page == -1) { ?>
-        <!-- Login page -->
+        <!--login page start-->
         <div class="container">
             <div class="form-control">
                 <form method="POST">
@@ -63,93 +75,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
                 <p style="color: red;"><?= "!!! Wrong password !!!" ?></p>
             <?php } ?>
         </div>
+        <!--login page end-->
     <?php } ?>
 
+    <!-------------------------------------------------------------------------------------------------->
+
     <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
-        <!-- Chat page -->
-        <div>
-            <div class="chat-container">
-                <br>
-                <div class="chat-box" id="chat-box">
-                    <?php
-                    foreach ($data as $index => $msgs) {
-                        if (isset($msgs['bool']) && $msgs['bool'] == '1') {
-                            $name = htmlentities($msgs['name']);
-                            $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'Error';
-                            echo "<div><div class='name'>$name";
-
-                            if (isset($name) && $name == $msgs['name']) {
-                                // Only show the button if the names match
-                                echo "<button class='delete-btn' data-index='$index'>Delete</button>";
-                            }
-                            echo "</div><div class='message'>$msg</div><br></div>";
-                        }
-                    }
-                    ?>
-                </div>
-
-                <div class="input-area" class="container">
-                    <form method="POST" id="message-form">
-                        <input id="message" name="messenger" placeholder="Type a message here" required>
-                        <button type="submit" id="send-btn" class="send">Send</button>
-                    </form>
-                </div>
+        <!--unlock page start-->
+        <div class="chat-container">
+            <!-- chat panel -->
+            <div class="chat-box">
+                <?php
+                foreach ($data as $msgs) {
+                    $name = htmlentities($msgs['name']);
+                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // 檢查是否存在 'message' 鍵
+                    echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
+                }
+                ?>
             </div>
-            <div class="container">
-                <form method="POST" action="logout.php">
-                    <button type="submit">Logout</button>
+
+            <div class="input-area">
+                <form method="POST">
+                    <input id="message" name="messenger" placeholder="Type a message here" required>
+                    <button type="submit" id="send-btn">Send</button>
                 </form>
             </div>
         </div>
+        <form method="POST" action="logout.php">
+            <button type="submit">Logout</button>
+        </form>
+        <!--unlock page end-->
     <?php } ?>
-
-    <script>
-        // Function to load new messages
-        function loadMessages() {
-            $.ajax({
-                url: 'get_messages.php', // PHP file to get messages
-                method: 'GET',
-                success: function (response) {
-                    $('#chat-box').html(response); // Update the chat-box with new messages
-                }
-            });
-        }
-
-        // Load messages every 3 seconds
-        setInterval(loadMessages, 3000);
-
-        // Submit message via AJAX
-        $('#message-form').submit(function (event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            var message = $('#message').val();
-
-            $.ajax({
-                url: 'send_message.php', // PHP file to handle message sending
-                method: 'POST',
-                data: { messenger: message },
-                success: function (response) {
-                    $('#message').val(''); // Clear the input field after sending
-                    loadMessages(); // Load the latest messages after sending
-                }
-            });
-        });
-
-        // Delete message via AJAX
-        $(document).on('click', '.delete-btn', function () {
-            var messageIndex = $(this).data('index'); // Get the message index to delete
-
-            $.ajax({
-                url: 'delete_message.php',
-                method: 'POST',
-                data: { index: messageIndex }, // Send the index to the server
-                success: function (response) {
-                    alert(response); // Show success or error message
-                    loadMessages(); // Reload the chat messages
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
