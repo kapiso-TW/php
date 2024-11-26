@@ -1,9 +1,25 @@
 <?php
-error_reporting(0);  // dedug off
-ini_set('display_errors', 0);  // No error
+error_reporting(0); // Debug off
+ini_set('display_errors', 0); // No error
 session_start();
 
-$page = 0;
+// 初始化 $page
+if (!isset($page)) {
+    $page = 0;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
+    $password = $_POST['password'];
+    if ($password === '1030') {
+        $_SESSION['name'] = 'Sally';
+        $page = 1;
+    } elseif ($password === 'simple') {
+        $_SESSION['name'] = 'XXXX';
+        $page = 1;
+    } else {
+        $page = -1;
+    }
+}
 ?>
 
 <!DOCTYPE html>
