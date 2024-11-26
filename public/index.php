@@ -1,40 +1,45 @@
 <?php
-session_start(); // 啟用 Session
+session_start();
 
-// 初始化變數
-$dataFile = '/tmp/data.json'; // 使用 /tmp 路徑存放 data.json
+$dataFile = '/tmp/data.json';
 $data = file_exists($dataFile) ? file_get_contents($dataFile) : '[]';
 $data = json_decode($data, true);
 
 $password = isset($_POST['password']) ? $_POST['password'] : null;
 $mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
 
-// 初始化頁面狀態
+date_default_timezone_set('Asia/Taipei');
+$currentTime = date('md - His');
+
 if (!isset($_SESSION['page'])) {
-    $_SESSION['page'] = 0; // 初始頁面為登入頁面
+    $_SESSION['page'] = 0; 
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // 處理登入邏輯
+    if ($_SESSION['page'] == 0 || $_SESSION['page'] == -1) { // login
         if (isset($password)) {
             if ($password == '1030') {
                 $_SESSION['name'] = 'Sally';
-                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
+                $_SESSION['page'] = 1; // success login
             } elseif ($password == 'simple') {
                 $_SESSION['name'] = 'XXXXX';
-                $_SESSION['page'] = 1; // 成功登入，進入聊天頁面
+                $_SESSION['page'] = 1; // success login
             } else {
-                $_SESSION['page'] = -1; // 密碼錯誤，顯示錯誤訊息
+                $_SESSION['page'] = -1; // bad login
             }
         }
-    } elseif ($_SESSION['page'] == 1) { // 處理訊息發送邏輯
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } elseif ($_SESSION['page'] == 1) { // save mes
         if (isset($_SESSION['name']) && isset($mes)) {
-            $data[] = ['name' => $_SESSION['name'], 'message' => $mes];
-            file_put_contents($dataFile, json_encode($data)); // 保存訊息到 /tmp/data.json
+            $data[] = ['name' => $_SESSION['name'], 'message' => $mes, 'bool' => 1, 'time' => $currentTime];
+            file_put_contents($dataFile, json_encode($data)); // save mes in /tmp/data.json
         }
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     }
 }
-$page = $_SESSION['page']; // 確保頁面狀態正確
+$page = $_SESSION['page']; // ensure page correct
 ?>
 
 <!DOCTYPE html>
@@ -90,8 +95,12 @@ $page = $_SESSION['page']; // 確保頁面狀態正確
                 <?php
                 foreach ($data as $msgs) {
                     $name = htmlentities($msgs['name']);
-                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // 檢查是否存在 'message' 鍵
-                    echo "<div class='name'>$name</div><div class='message'>$msg</div><br>";
+                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check 'message' is exsit or not
+                    echo "<div class='name'>$name</div>";
+                    if($_SESSION['name'] === $msgs['name']) {
+                        echo "<button> test </button>";
+                    }
+                    echo "<div class='message'>$msg</div><br>";
                 }
                 ?>
             </div>
