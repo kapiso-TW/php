@@ -2,9 +2,11 @@
 session_start(); // 啟用 Session
 
 // 初始化變數
-$password = isset($_POST['password']) ? $_POST['password'] : null;
-$data = file_get_contents('data.json');
+$dataFile = '/tmp/data.json'; // 使用 /tmp 路徑存放 data.json
+$data = file_exists($dataFile) ? file_get_contents($dataFile) : '[]';
 $data = json_decode($data, true);
+
+$password = isset($_POST['password']) ? $_POST['password'] : null;
 $mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
 
 // 初始化頁面狀態
@@ -28,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($_SESSION['page'] == 1) { // 處理訊息發送邏輯
         if (isset($_SESSION['name']) && isset($mes)) {
             $data[] = ['name' => $_SESSION['name'], 'message' => $mes];
-            file_put_contents('data.json', json_encode($data)); // 保存訊息到 data.json
+            file_put_contents($dataFile, json_encode($data)); // 保存訊息到 /tmp/data.json
         }
     }
 }
@@ -78,7 +80,7 @@ $page = $_SESSION['page']; // 確保頁面狀態正確
         <!--login page end-->
     <?php } ?>
 
-    <!-------------------------------------------------------------------------------------------------->
+    <!--------------------------------------------------------------------------------------------------->
 
     <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
         <!--unlock page start-->
