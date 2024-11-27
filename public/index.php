@@ -94,69 +94,55 @@ $page = $_SESSION['page']; // ensure page correct
             <div class="chat-container">
                 <!-- chat panel -->
                 <div class="chat-box">
-
-                    <div class="message-post">
-                        <div class="name">Test_bot</div>
-                        <form method="POST" action="recall_message.php">
-                            <input type="hidden" name="time" value="2024-11-27 22:44:36">
-                            <button type="submit">收回</button>
-                        </form>
-                        <div class="text">test-測試/123-sagdg@$#%$WfgdfgDFSDFSDFASDFRSFlghjghjoffsdf</div>
-                        <br>
-                    </div>
-
-                    <div class="message-self">
-                        <div class="name">Test_bot</div>
-                        <form method="POST" action="recall_message.php">
-                            <input type="hidden" name="time" value="2024-11-27 22:44:36">
-                            <button type="submit">收回</button>
-                        </form>
-                        <div class="text">test-測試/123-sagdg@$#%$WfgdfgDFSDFSDFASDFRSFlghjghjoffsdf</div>
-                        <br>
-                    </div>
-
-                    <div class="message">
-                        <div class="name">Sally</div>
-                        <form method="POST" action="recall_message.php">
-                            <input type="hidden" name="time" value="2024-11-27 22:44:32">
-                        </form>
-                        <div class="recalled" style="color: gray;">[訊息已收回]</div><br>
-                    </div>
-
                     <?php
                     foreach ($data as $msgs) {
                         $name = htmlentities($msgs['name']);
-                        $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check 'message' is exsit or not
+                        $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check have message or not
                 
-                        if ($msgs['bool'] === 1){
-
-                            echo "<div ";
+                        if ($msgs['bool'] === 1) { // unrecalled
                             if ($_SESSION['name'] === $msgs['name']) {
-                                echo "class='message-self'>";
-                                echo '<form method="POST" action="recall_message.php">
-                                     <input type="hidden" name="time" value="' . htmlentities($msgs['time']) . '">';
-
-                            }else{
-                                echo "class='message-post'>";
+                                // self message
+                                echo "<div class='message-self'>";
+                                echo "<form method='POST' action='recall_message.php'>";
+                                echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
+                                echo "<div class='name'>$name</div>";
+                                echo "<div class='text'>$msg</div>";
+                                echo '<button type="submit">收回</button>';
+                                echo "</form>"; // close form
+                            } else {
+                                // other's message
+                                echo "<div class='message-post'>";
+                                echo "<div class='name'>$name</div>";
+                                echo "<div class='text'>$msg</div>";
                             }
-
-                            echo "<div class='name'>$name</div><div class='text.sent'>$msg</div><br>";
-                            echo '<button type="submit">收回</button>';
-
-                        }else{
-                            echo "<div><div class='name'>$name</div></div>";
-                            echo '<div class="recalled" style="color: gray;">[訊息已收回]</div><br>';
+                            echo "</div>"; // close message-self or message-post
+                        } else { // recalled
+                            echo "<div class='message-post'>";
+                            echo "<div class='name'>$name</div>";
+                            echo '<div class="recalled" style="color: gray;">[訊息已收回]</div>';
+                            echo "</div>"; // close message-post
                         }
-
-                        echo '</form></div>';
                     }
                     ?>
                 </div>
-
                 <div class="input-area">
                     <form method="POST">
-                        <input id="message" name="messenger" placeholder="Type a message here" required>
-                        <button type="submit" id="send-btn">Send</button>
+                        <div class="messageBox">
+                            <div class="fileUploadWrapper">
+                            </div>
+                            <input id="message" type="text" placeholder="Message..." required="" />
+                            <button id="send-btn">
+                                <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                                        fill="none"></path>
+                                    <path
+                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                                        stroke="#6c6c6c" stroke-width="33.67" stroke-linecap="round"
+                                        stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
