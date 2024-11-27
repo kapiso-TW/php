@@ -45,6 +45,7 @@ $page = $_SESSION['page']; // ensure page correct
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,18 +98,27 @@ $page = $_SESSION['page']; // ensure page correct
                     foreach ($data as $msgs) {
                         $name = htmlentities($msgs['name']);
                         $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check 'message' is exsit or not
+                
                         echo "<div class='message'><div class='name'>$name</div>";
+
                         if ($_SESSION['name'] === $msgs['name']) {
                             echo '<form method="POST" action="recall_message.php">
-                                <input type="hidden" name="time" value="' . htmlentities($msgs['time']) . '">
-                                <button type="submit">收回</button>
-                              </form>';
+                                 <input type="hidden" name="time" value="' . htmlentities($msgs['time']) . '">';
+
+                            if ($msgs['bool'] === 1) { // only unrecall can be post
+                                echo '<button type="submit">收回</button>';
+                            }
                         }
+
+
+
+                        echo '</form>';
                         if ($msgs['bool'] === 1) { // only unrecall can be post
                             echo "<div class='message'>$msg</div><br>";
                         } else {
                             echo "<div class='message' style='color: gray;'>[訊息已收回]</div><br>";
                         }
+
                         echo "</div>";
                     }
                     ?>

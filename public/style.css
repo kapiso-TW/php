@@ -168,3 +168,10 @@ textarea {
 .send:hover {
     background-color: #0077cc;
 }
+
+/* message */
+.message{
+    background-color: gray;
+    border-radius: 25px;
+
+}
