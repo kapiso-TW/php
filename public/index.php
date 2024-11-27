@@ -130,7 +130,7 @@ $page = $_SESSION['page']; // ensure page correct
                         <div class="messageBox">
                             <div class="fileUploadWrapper">
                             </div>
-                            <input id="message" type="text" placeholder="Message..." required="" />
+                            <input id="message" name="messenger" type="text" placeholder="Message..." required="" />
                             <button id="send-btn" type="submit">
                                 <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -147,7 +147,7 @@ $page = $_SESSION['page']; // ensure page correct
                 </div>
             </div>
             <div class="container">
-                <form method="POST" action="logout.php" onclick="">
+                <form method="POST" action="logout.php">
                     <button class="logout" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-6 h-6">
@@ -155,7 +155,7 @@ $page = $_SESSION['page']; // ensure page correct
                                 d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
                         </svg>
                         <div class="logout-text">
-                            Button
+                            Logout
                         </div>
                     </button>
                 </form>
