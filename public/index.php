@@ -94,32 +94,61 @@ $page = $_SESSION['page']; // ensure page correct
             <div class="chat-container">
                 <!-- chat panel -->
                 <div class="chat-box">
+
+                    <div class="message-post">
+                        <div class="name">Test_bot</div>
+                        <form method="POST" action="recall_message.php">
+                            <input type="hidden" name="time" value="2024-11-27 22:44:36">
+                            <button type="submit">收回</button>
+                        </form>
+                        <div class="text">test-測試/123-sagdg@$#%$WfgdfgDFSDFSDFASDFRSFlghjghjoffsdf</div>
+                        <br>
+                    </div>
+
+                    <div class="message-self">
+                        <div class="name">Test_bot</div>
+                        <form method="POST" action="recall_message.php">
+                            <input type="hidden" name="time" value="2024-11-27 22:44:36">
+                            <button type="submit">收回</button>
+                        </form>
+                        <div class="text">test-測試/123-sagdg@$#%$WfgdfgDFSDFSDFASDFRSFlghjghjoffsdf</div>
+                        <br>
+                    </div>
+
+                    <div class="message">
+                        <div class="name">Sally</div>
+                        <form method="POST" action="recall_message.php">
+                            <input type="hidden" name="time" value="2024-11-27 22:44:32">
+                        </form>
+                        <div class="recalled" style="color: gray;">[訊息已收回]</div><br>
+                    </div>
+
                     <?php
                     foreach ($data as $msgs) {
                         $name = htmlentities($msgs['name']);
                         $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check 'message' is exsit or not
                 
-                        echo "<div class='message'><div class='name'>$name</div>";
+                        if ($msgs['bool'] === 1){
 
-                        if ($_SESSION['name'] === $msgs['name']) {
-                            echo '<form method="POST" action="recall_message.php">
-                                 <input type="hidden" name="time" value="' . htmlentities($msgs['time']) . '">';
+                            echo "<div ";
+                            if ($_SESSION['name'] === $msgs['name']) {
+                                echo "class='message-self'>";
+                                echo '<form method="POST" action="recall_message.php">
+                                     <input type="hidden" name="time" value="' . htmlentities($msgs['time']) . '">';
 
-                            if ($msgs['bool'] === 1) { // only unrecall can be post
-                                echo '<button type="submit">收回</button>';
+                            }else{
+                                echo "class='message-post'>";
                             }
+
+                            echo "<div class='name'>$name</div><div class='text.sent'>$msg</div><br>";
+                            echo '<button type="submit">收回</button>';
+
+                        }else{
+                            echo "<div><div class='name'>$name</div></div>";
+                            echo '<div class="recalled" style="color: gray;">[訊息已收回]</div><br>';
                         }
 
-
-
-                        echo '</form>';
-                        if ($msgs['bool'] === 1) { // only unrecall can be post
-                            echo "<div class='message'>$msg</div><br>";
-                        } else {
-                            echo "<div class='message' style='color: gray;'>[訊息已收回]</div><br>";
-                        }
-
-                        echo "</div>";
+                        echo '</form></div>';
                     }
                     ?>
                 </div>

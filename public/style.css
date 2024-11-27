@@ -170,8 +170,42 @@ textarea {
 }
 
 /* message */
-.message{
-    background-color: gray;
-    border-radius: 25px;
+.message-post, .recalled{
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    max-width: 80%;
+    word-wrap: break-word;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    position: relative;
+    margin-right: auto;
+}
 
+.message-self {
+    background-color: rgba(52, 152, 219, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    max-width: 80%;
+    word-wrap: break-word;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    position: relative;
+    margin-left: auto;
+}
+
+.text {
+    font-size: 16px;
+    color: #fff;
+    line-height: 1.5;
+    margin-bottom: 5px;
+}
+
+.name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #76b9f2;
+    margin-bottom: 10px;
 }
