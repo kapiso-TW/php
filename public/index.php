@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-store');
+
 $dataFile = '/tmp/data.json';
 $data = file_exists($dataFile) ? file_get_contents($dataFile) : '[]';
 $data = json_decode($data, true);
