@@ -120,7 +120,13 @@ $page = $_SESSION['page']; // ensure page correct
                             }
                             echo "</div>"; // close message-self or message-post
                         } else { // recalled
-                            echo "<div class='message-post'>";
+                            if ($_SESSION['name'] === $msgs['name']) {
+                                // self message
+                                echo "<div class='message-post'>";
+                            } else {
+                                // other's message
+                                echo "<div class='message-self'>";
+                            }
                             echo "<div class='name'>$name</div>";
                             echo '<div class="recalled" style="color: gray;">[訊息已收回]</div>';
                             echo "</div>"; // close message-post
@@ -167,4 +173,5 @@ $page = $_SESSION['page']; // ensure page correct
         <!--unlock page end-->
     <?php } ?>
 </body>
+
 </html>
