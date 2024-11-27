@@ -9,10 +9,11 @@ $password = isset($_POST['password']) ? $_POST['password'] : null;
 $mes = isset($_POST['messenger']) ? $_POST['messenger'] : null;
 
 date_default_timezone_set('Asia/Taipei');
-$currentTime = date('md - His');
+$currentTime = date('Y-m-d H:i:s'); // time
+
 
 if (!isset($_SESSION['page'])) {
-    $_SESSION['page'] = 0; 
+    $_SESSION['page'] = 0;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -88,41 +89,45 @@ $page = $_SESSION['page']; // ensure page correct
     <!--------------------------------------------------------------------------------------------------->
 
     <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
-        <!--unlock page start-->
-        <div class="chat-container">
-            <!-- chat panel -->
-            <div class="chat-box">
-                <?php
-                foreach ($data as $msgs) {
-                    $name = htmlentities($msgs['name']);
-                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check 'message' is exsit or not
-                    echo "<div class='message'><div class='name'>$name</div>";
-                    if($_SESSION['name'] === $msgs['name']) {
-                        echo '<form method="POST" action="recall_message.php">
+    <!--unlock page start-->
+        <div>
+            <div class="chat-container">
+                <!-- chat panel -->
+                <div class="chat-box">
+                    <?php
+                    foreach ($data as $msgs) {
+                        $name = htmlentities($msgs['name']);
+                        $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check 'message' is exsit or not
+                        echo "<div class='message'><div class='name'>$name</div>";
+                        if ($_SESSION['name'] === $msgs['name']) {
+                            echo '<form method="POST" action="recall_message.php">
                                 <input type="hidden" name="time" value="' . htmlentities($msgs['time']) . '">
-                                <button type="submit">訊息已收回</button>
+                                <button type="submit">收回</button>
                               </form>';
+                        }
+                        if ($msgs['bool'] === 1) { // only unrecall can be post
+                            echo "<div class='message'>$msg</div><br>";
+                        } else {
+                            echo "<div class='message' style='color: gray;'>[訊息已收回]</div><br>";
+                        }
+                        echo "</div>";
                     }
-                    if ($msgs['bool'] === 1) { // only unrecall can be post
-                        echo "<div class='message'>$msg</div><br>";
-                    } else {
-                        echo "<div class='message' style='color: gray;'>[訊息已收回]</div><br>";
-                    }
-                    echo "</div>";
-                }                
-                ?>
-            </div>
+                    ?>
+                </div>
 
-            <div class="input-area">
-                <form method="POST">
-                    <input id="message" name="messenger" placeholder="Type a message here" required>
-                    <button type="submit" id="send-btn">Send</button>
+                <div class="input-area">
+                    <form method="POST">
+                        <input id="message" name="messenger" placeholder="Type a message here" required>
+                        <button type="submit" id="send-btn">Send</button>
+                    </form>
+                </div>
+            </div>
+            <div class="container">
+                <form method="POST" action="logout.php" onclick="">
+                    <button type="submit">Logout</button>
                 </form>
             </div>
         </div>
-        <form method="POST" action="logout.php" onclick="">
-            <button type="submit">Logout</button>
-        </form>
         <!--unlock page end-->
     <?php } ?>
 </body>
