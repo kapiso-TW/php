@@ -1,8 +1,9 @@
 <?php
-session_start();
+header('X-Content-Type-Options: nosniff'); // 防止 MIME 類型猜測
+header('Cache-Control: no-cache, must-revalidate'); // 禁止緩存但允許重新驗證
+header('Content-Type: text/html; charset=utf-8'); // 明確設置內容類型
 
-header('X-Content-Type-Options: nosniff');
-header('Cache-Control: no-store');
+session_start();
 
 $dataFile = '/tmp/data.json';
 $data = file_exists($dataFile) ? file_get_contents($dataFile) : '[]';
@@ -173,5 +174,5 @@ $page = $_SESSION['page']; // ensure page correct
         <!--unlock page end-->
     <?php } ?>
 </body>
-
+ 
 </html>
