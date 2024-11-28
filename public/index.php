@@ -175,6 +175,47 @@ $page = $_SESSION['page']; // ensure page correct
         <!--unlock page end-->
     <?php } ?>
     <script>
+        var ws = new WebSocket("wss://localhost:8000/ws");
+
+        ws.onopen = function () {
+            console.log("WebSocket connection established");
+        };
+
+        ws.onmessage = function (event) {
+            console.log("Message from server ", event.data);
+
+            var message = JSON.parse(event.data);
+            if (message) {
+                var chatBox = document.querySelector('.chat-box');
+                var messageElement = document.createElement('div');
+                messageElement.classList.add(message.name === '<?php echo $_SESSION['name']; ?>' ? 'message-self' : 'message-post');
+
+                var nameElement = document.createElement('div');
+                nameElement.classList.add('name');
+                nameElement.textContent = message.name;
+
+                var textElement = document.createElement('div');
+                textElement.classList.add('text');
+                textElement.textContent = message.message;
+
+                messageElement.appendChild(nameElement);
+                messageElement.appendChild(textElement);
+
+                chatBox.appendChild(messageElement);
+                chatBox.scrollTop = chatBox.scrollHeight; // rolling to the newest
+            }
+        };
+
+        ws.onerror = function (error) {
+            console.error("WebSocket error: ", error);
+        };
+
+        ws.onclose = function () {
+            console.log("WebSocket connection closed");
+        };
+
+
+
         // forbin any rolling
         document.body.addEventListener('touchmove', function (event) {
             event.preventDefault();
