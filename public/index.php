@@ -156,6 +156,7 @@ $page = $_SESSION['page']; // ensure page correct
                     </form>
                 </div>
             </div>
+
             <div class="container">
                 <form method="POST" action="logout.php">
                     <button class="logout" type="submit">
@@ -173,6 +174,19 @@ $page = $_SESSION['page']; // ensure page correct
         </div>
         <!--unlock page end-->
     <?php } ?>
+    <script>
+        // forbin any rolling
+        document.body.addEventListener('touchmove', function (event) {
+            event.preventDefault();
+        }, { passive: false });
+
+        // allow .chat-box rolling
+        const chatBox = document.querySelector('.chat-box');
+        chatBox.addEventListener('touchmove', function (event) {
+            event.stopPropagation();
+        }, { passive: false });
+
+    </script>
 </body>
- 
+
 </html>

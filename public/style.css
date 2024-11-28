@@ -1,10 +1,12 @@
 body {
+    overflow: hidden;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background-color: black;
+    margin: 0;
 }
 
 .container {
@@ -116,7 +118,8 @@ body {
 /* chat panel */
 .chat-container {
     width: 400px;
-    margin: 50px auto;
+    margin: 20px auto;
+    width: calc(100%);
     border-radius: 10px;
     overflow: hidden;
     background: #1c1c1c;
@@ -126,14 +129,18 @@ body {
     height: 500px;
 }
 
+
 .chat-box {
-    background: url('https://www.nasa.gov/sites/default/files/thumbnails/space_0.jpg') no-repeat center center;
+    -webkit-overflow-scrolling: touch; /* 啟用慣性滾動 */
+    overflow-y: auto;
+    /*background: url('https://live.staticflickr.com/4753/25790223907_9ea3e63180_b.jpg') no-repeat center center;*/
     background-size: cover;
     flex-grow: 1;
-    padding: 20px;
-    overflow-y: scroll;
+    padding: 10px;
     color: #fff;
     font-size: 14px;
+    border-radius: 10px;
+    max-height: calc(100vh - 200px);
 }
 
 .input-area {
