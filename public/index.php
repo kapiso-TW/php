@@ -109,7 +109,7 @@ $page = $_SESSION['page']; // ensure page correct
                                 echo "<div class='message-self'>";
                                 echo "<form method='POST' action='recall_message.php'>";
                                 echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
-                                echo "<div class='name'>$name</div>";
+                                echo "<div class='name-self'>$name</div>";
                                 echo "<div class='text'>$msg</div>";
                                 echo '<button type="submit">收回</button>';
                                 echo "</form>"; // close form
@@ -123,7 +123,7 @@ $page = $_SESSION['page']; // ensure page correct
                         } else { // recalled
                             if ($_SESSION['name'] === $msgs['name']) {
                                 // self message
-                                echo "<div class='message-self'>";
+                                echo "<div class='message-self-recalled'>";
                             } else {
                                 // other's message
                                 echo "<div class='message-post'>";

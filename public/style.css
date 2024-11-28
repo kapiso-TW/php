@@ -203,6 +203,17 @@ textarea {
     margin-left: auto;
 }
 
+.message-self-recalled{
+    background-color: rgba(52, 152, 219, 0);
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    max-width: 80%;
+    word-wrap: break-word;
+    position: relative;
+    margin-left: auto;
+}
+
 .text {
     font-size: 16px;
     color: #fff;
@@ -215,6 +226,17 @@ textarea {
     font-weight: bold;
     color: #76b9f2;
     margin-bottom: 10px;
+    text-align: left;
+    margin-right: auto;
+}
+
+.name-self {
+    font-size: 14px;
+    font-weight: bold;
+    color: #76b9f2;
+    margin-bottom: 10px;
+    text-align: right;
+    margin-left: auto;
 }
 
 /* send area */ 
