@@ -124,11 +124,13 @@ $page = $_SESSION['page']; // ensure page correct
                             if ($_SESSION['name'] === $msgs['name']) {
                                 // self message
                                 echo "<div class='message-self-recalled'>";
+                                echo "<div class='name-self'>$name</div>";
                             } else {
                                 // other's message
                                 echo "<div class='message-post'>";
+                                echo "<div class='name'>$name</div>";
                             }
-                            echo "<div class='name'>$name</div>";
+
                             echo '<div class="recalled" style="color: gray;">[訊息已收回]</div>';
                             echo "</div>"; // close message-post
                         }
