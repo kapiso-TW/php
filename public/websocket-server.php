@@ -3,9 +3,8 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\App;
 
-require __DIR__ . '/../vendor/autoload.php'; // 引入 Composer 加載器
+require __DIR__ . '/../vendor/autoload.php';
 
-// 定義一個 WebSocket 聽眾
 class WebSocketServer implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
         echo "New connection: {$conn->resourceId}\n";
