@@ -118,9 +118,8 @@ body {
 /* chat panel */
 .chat-container {
     width: 400px;
-    margin: 20px auto;
     width: calc(100%);
-    border-radius: 10px;
+    border-radius: 10px 10px 0 0;
     overflow: hidden;
     background: #1c1c1c;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
@@ -150,6 +149,7 @@ body {
     padding: 10px;
     background: #1c1c1c;
     border-top: 1px solid #333;
+    border-radius: 0 0 10px 10px;
 }
 
 textarea {

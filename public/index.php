@@ -57,7 +57,7 @@ $page = $_SESSION['page']; // ensure page correct
     <title>A Page?</title>
 </head>
 
-<body>
+<>
     <!--background start-->
     <div class="stars"></div>
     <!--background end-->
@@ -98,10 +98,11 @@ $page = $_SESSION['page']; // ensure page correct
     <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
     <!--unlock page start-->
         <div>
-            <div class="chat-container">
-                <!-- chat panel -->
+            <div>
+                <div class="chat-container">
+                    <!-- chat panel -->
 
-                <!-- test message start
+                    <!-- test message start
 
                 <div class="chat-box">
                     <div class="message-post">
@@ -130,84 +131,86 @@ $page = $_SESSION['page']; // ensure page correct
 
                     test message end -->
 
-                <?php
-                foreach ($data as $msgs) {
-                    $name = htmlentities($msgs['name']);
-                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check have message or not
-            
-                    if ($msgs['bool'] === 1) { // unrecalled
-                        if ($_SESSION['name'] === $msgs['name']) {
-                            // self message
-                            echo "<div class='message-self'>";
-                            echo "<form method='POST' action='recall_message.php' class='text-form'>";
-                            echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
-                            echo "<div class='name-self'>$name</div>";
-                            echo "<div class='text'>$msg</div>";
-                            echo '<button type="submit">收回</button>';
-                            echo "</form>"; // close form
-                        } else {
-                            // other's message
-                            echo "<div class='message-post'>";
-                            echo "<div class='name'>$name</div>";
-                            echo "<div class='text'>$msg</div>";
-                        }
-                        echo "</div>"; // close message-self or message-post
-                    } else { // recalled
-                        if ($_SESSION['name'] === $msgs['name']) {
-                            // self message
-                            echo "<div class='message-self'>";
-                            echo "<div class='name-self'>$name</div>";
-                        } else {
-                            // other's message
-                            echo "<div class='message-post'>";
-                            echo "<div class='name'>$name</div>";
-                        }
+                    <?php
+                    foreach ($data as $msgs) {
+                        $name = htmlentities($msgs['name']);
+                        $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check have message or not
+                
+                        if ($msgs['bool'] === 1) { // unrecalled
+                            if ($_SESSION['name'] === $msgs['name']) {
+                                // self message
+                                echo "<div class='message-self'>";
+                                echo "<form method='POST' action='recall_message.php' class='text-form'>";
+                                echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
+                                echo "<div class='name-self'>$name</div>";
+                                echo "<div class='text'>$msg</div>";
+                                echo '<button type="submit">收回</button>';
+                                echo "</form>"; // close form
+                            } else {
+                                // other's message
+                                echo "<div class='message-post'>";
+                                echo "<div class='name'>$name</div>";
+                                echo "<div class='text'>$msg</div>";
+                            }
+                            echo "</div>"; // close message-self or message-post
+                        } else { // recalled
+                            if ($_SESSION['name'] === $msgs['name']) {
+                                // self message
+                                echo "<div class='message-self'>";
+                                echo "<div class='name-self'>$name</div>";
+                            } else {
+                                // other's message
+                                echo "<div class='message-post'>";
+                                echo "<div class='name'>$name</div>";
+                            }
 
-                        echo '<div class="text" style="color: gray;">[訊息已收回]</div>';
-                        echo "</div>"; // close message-post
+                            echo '<div class="text" style="color: gray;">[訊息已收回]</div>';
+                            echo "</div>"; // close message-post
+                        }
                     }
-                }
-                ?>
-            </div>
-            <div class="input-area">
-                <form method="POST">
-                    <div class="messageBox">
-                        <div class="fileUploadWrapper">
+                    ?>
+                </div>
+                <div class="input-area">
+                    <form method="POST">
+                        <div class="messageBox">
+                            <div class="fileUploadWrapper">
+                            </div>
+                            <input id="message" name="messenger" type="text" placeholder="Message..." required="" />
+                            <button id="send-btn" type="submit">
+                                <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                                        fill="none"></path>
+                                    <path
+                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                                        stroke="#6c6c6c" stroke-width="33.67" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                    </path>
+                                </svg>
+                            </button>
                         </div>
-                        <input id="message" name="messenger" type="text" placeholder="Message..." required="" />
-                        <button id="send-btn" type="submit">
-                            <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                                    fill="none"></path>
-                                <path
-                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                                    stroke="#6c6c6c" stroke-width="33.67" stroke-linecap="round" stroke-linejoin="round">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="container">
+                <form method="POST" action="logout.php">
+                    <button class="logout" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
+                        </svg>
+                        <div class="logout-text">
+                            Logout
+                        </div>
+                    </button>
                 </form>
             </div>
         </div>
-
-        <div class="container">
-            <form method="POST" action="logout.php">
-                <button class="logout" type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
-                    </svg>
-                    <div class="logout-text">
-                        Logout
-                    </div>
-                </button>
-            </form>
-        </div>
-        </div>
         <!--unlock page end-->
     <?php } ?>
+
     <script>
         // forbin any rolling
         document.body.addEventListener('touchmove', function (event) {
@@ -221,6 +224,6 @@ $page = $_SESSION['page']; // ensure page correct
         }, { passive: false });
 
     </script>
-</body>
+    </body>
 
 </html>
