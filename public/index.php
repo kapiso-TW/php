@@ -209,45 +209,6 @@ $page = $_SESSION['page']; // ensure page correct
 <?php } ?>
 
 <script>
-    const ws = new WebSocket('ws://localhost:8080/chat');
-
-    // 當 WebSocket 連線建立時
-    ws.onopen = function () {
-        console.log('WebSocket connected');
-    };
-
-    // 當收到 WebSocket 訊息時
-    ws.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        const chatContainer = document.querySelector('.chat-container');
-        const newMessage = document.createElement('div');
-        newMessage.className = data.name === '<?= $_SESSION['name'] ?>' ? 'message-self' : 'message-post';
-        newMessage.innerHTML = `
-        <div class="name">${data.name}</div>
-        <div class="text">${data.message}</div>
-        <div class="time">${data.time}</div>
-    `;
-        chatContainer.appendChild(newMessage);
-        chatContainer.scrollTop = chatContainer.scrollHeight; // 自動捲到底部
-    };
-
-    // 當按下送出按鈕時
-    const form = document.querySelector('.input-area form');
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const messageInput = document.querySelector('#message');
-        const message = messageInput.value;
-
-        if (message) {
-            ws.send(JSON.stringify({
-                type: 'message',
-                name: '<?= $_SESSION['name'] ?>',
-                message: message,
-                time: new Date().toISOString()
-            }));
-            messageInput.value = ''; // 清空輸入框
-        }
-    });
     // forbin any rolling
     document.body.addEventListener('touchmove', function (event) {
         event.preventDefault();
