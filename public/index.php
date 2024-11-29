@@ -97,76 +97,8 @@ $page = $_SESSION['page']; // ensure page correct
 <!--unlock page start-->
     <div>
         <div>
-            <div class="chat-container">
-                <!-- chat panel -->
+            <div class="chat-container" id="chat-container">
 
-                <!-- test message start
-
-                <div class="chat-box">
-                    <div class="message-post">
-                        <div class="name">message-post/name</div>
-                        <div class="text">text</div>
-                    </div>
-
-                    <div class="message-post">
-                        <div class="name">message-post/name</div>
-                        <div class="text" style="color: gray;">recalled(text)</div>
-                    </div>
-
-                    <div class="message-self">
-                        <div class="name-self">message-self-recalled/name-self</div>
-                        <div class="text-self" style="color: gray;">text-self //////////////////////////////////////////////
-                        </div>
-                    </div>
-
-                    <div class="message-self">
-                        <form method="POST" action="recall_message.php" class="text-form"><input type="hidden" name="time"
-                                value="0000-00-00 00:00:00">
-                            <div class="name-self">message-self/name-self</div>
-                            <div class="text-self">text-self</div><button type="submit">收回</button>
-                        </form>
-                    </div>
-
-                    test message end -->
-
-                <?php
-                foreach ($data as $msgs) {
-                    $name = htmlentities($msgs['name']);
-                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check have message or not
-            
-                    if ($msgs['bool'] === 1) { // unrecalled
-                        if ($_SESSION['name'] === $msgs['name']) {
-                            // self message
-                            echo "<div class='message-self'>";
-                            echo "<form method='POST' action='recall_message.php' class='text-form'>";
-                            echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
-                            echo "<div class='name-self'>$name</div>";
-                            echo "<div class='text'>$msg</div>";
-                            echo '<button type="submit">收回</button>';
-                            echo "</form>"; // close form
-                        } else {
-                            // other's message
-                            echo "<div class='message-post'>";
-                            echo "<div class='name'>$name</div>";
-                            echo "<div class='text'>$msg</div>";
-                        }
-                        echo "</div>"; // close message-self or message-post
-                    } else { // recalled
-                        if ($_SESSION['name'] === $msgs['name']) {
-                            // self message
-                            echo "<div class='message-self'>";
-                            echo "<div class='name-self'>$name</div>";
-                        } else {
-                            // other's message
-                            echo "<div class='message-post'>";
-                            echo "<div class='name'>$name</div>";
-                        }
-
-                        echo '<div class="text" style="color: gray;">[訊息已收回]</div>';
-                        echo "</div>"; // close message-post
-                    }
-                }
-                ?>
             </div>
             <div class="input-area">
                 <form method="POST">
@@ -219,6 +151,41 @@ $page = $_SESSION['page']; // ensure page correct
     chatBox.addEventListener('touchmove', function (event) {
         event.stopPropagation();
     }, { passive: false });
+
+    // Fetch messages every 2 seconds
+    function fetchMessages() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'fetch_messages.php', true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('chat-container').innerHTML = xhr.responseText;
+            }
+        };
+        xhr.send();
+    }
+
+    // Send message using AJAX
+    document.getElementById('message-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const message = document.getElementById('message').value;
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'send_message.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('message').value = ''; // Clear the input field
+                fetchMessages(); // Refresh the chat messages
+            }
+        };
+        xhr.send('messenger=' + encodeURIComponent(message));
+    });
+
+    // Fetch messages initially
+    fetchMessages();
+
+    // Periodically fetch messages every 2 seconds
+    setInterval(fetchMessages, 2000);
 
 </script>
 </body>
