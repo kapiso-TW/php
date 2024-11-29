@@ -116,6 +116,7 @@ body {
 }
 
 /* chat panel */
+
 .chat-container {
     width: 400px;
     width: calc(100%);
@@ -127,7 +128,6 @@ body {
     flex-direction: column;
     height: 500px;
 }
-
 
 .chat-box {
     -webkit-overflow-scrolling: touch;

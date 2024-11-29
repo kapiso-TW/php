@@ -56,53 +56,51 @@ $page = $_SESSION['page']; // ensure page correct
     <link rel="stylesheet" href="style.css">
     <title>A Page?</title>
 </head>
+<!--background start-->
+<div class="stars"></div>
+<!--background end-->
 
-<>
-    <!--background start-->
-    <div class="stars"></div>
-    <!--background end-->
-
-    <?php if ($page == 0 || $page == -1) { ?>
-        <!--login page start-->
-        <div class="container">
-            <div class="form-control">
-                <form method="POST">
-                    <input type="password" name="password" required>
-                    <label>
-                        <span></span><span></span>
-                        <span style="transition-delay:0ms">P</span><span style="transition-delay:50ms">a</span><span
-                            style="transition-delay:100ms">s</span><span style="transition-delay:150ms">s</span><span
-                            style="transition-delay:200ms">w</span><span style="transition-delay:250ms">o</span><span
-                            style="transition-delay:300ms">r</span><span style="transition-delay:350ms">d</span>
-                        <span style="transition-delay:400ms">(</span><span style="transition-delay:400ms">b</span><span
-                            style="transition-delay:300ms">i</span><span style="transition-delay:350ms">r</span><span
-                            style="transition-delay:200ms">t</span><span style="transition-delay:250ms">h</span><span
-                            style="transition-delay:100ms">d</span><span style="transition-delay:150ms">a</span><span
-                            style="transition-delay:0ms">y</span><span style="transition-delay:50ms">)</span>
-                    </label>
-            </div>
-            <button class="ubt">Unlock</button>
-            </form>
-            <?php if ($page == -1) { ?>
-                <p style="color: red;"><?= "!!! Wrong password !!!" ?></p>
-            <?php } ?>
+<?php if ($page == 0 || $page == -1) { ?>
+    <!--login page start-->
+    <div class="container">
+        <div class="form-control">
+            <form method="POST">
+                <input type="password" name="password" required>
+                <label>
+                    <span></span><span></span>
+                    <span style="transition-delay:0ms">P</span><span style="transition-delay:50ms">a</span><span
+                        style="transition-delay:100ms">s</span><span style="transition-delay:150ms">s</span><span
+                        style="transition-delay:200ms">w</span><span style="transition-delay:250ms">o</span><span
+                        style="transition-delay:300ms">r</span><span style="transition-delay:350ms">d</span>
+                    <span style="transition-delay:400ms">(</span><span style="transition-delay:400ms">b</span><span
+                        style="transition-delay:300ms">i</span><span style="transition-delay:350ms">r</span><span
+                        style="transition-delay:200ms">t</span><span style="transition-delay:250ms">h</span><span
+                        style="transition-delay:100ms">d</span><span style="transition-delay:150ms">a</span><span
+                        style="transition-delay:0ms">y</span><span style="transition-delay:50ms">)</span>
+                </label>
         </div>
-        <!--login page end-->
-    <?php } ?>
+        <button class="ubt">Unlock</button>
+        </form>
+        <?php if ($page == -1) { ?>
+            <p style="color: red;"><?= "!!! Wrong password !!!" ?></p>
+        <?php } ?>
+    </div>
+    <!--login page end-->
+<?php } ?>
 
-    <!--------------------------------------------------------------------------------------------------->
+<!--------------------------------------------------------------------------------------------------->
 
 
 
 
-    <?php if ($page == 1 && isset($_SESSION['name'])) { ?>
-    <!--unlock page start-->
+<?php if ($page == 1 && isset($_SESSION['name'])) { ?>
+<!--unlock page start-->
+    <div>
         <div>
-            <div>
-                <div class="chat-container">
-                    <!-- chat panel -->
+            <div class="chat-container">
+                <!-- chat panel -->
 
-                    <!-- test message start
+                <!-- test message start
 
                 <div class="chat-box">
                     <div class="message-post">
@@ -131,99 +129,137 @@ $page = $_SESSION['page']; // ensure page correct
 
                     test message end -->
 
-                    <?php
-                    foreach ($data as $msgs) {
-                        $name = htmlentities($msgs['name']);
-                        $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check have message or not
-                
-                        if ($msgs['bool'] === 1) { // unrecalled
-                            if ($_SESSION['name'] === $msgs['name']) {
-                                // self message
-                                echo "<div class='message-self'>";
-                                echo "<form method='POST' action='recall_message.php' class='text-form'>";
-                                echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
-                                echo "<div class='name-self'>$name</div>";
-                                echo "<div class='text'>$msg</div>";
-                                echo '<button type="submit">收回</button>';
-                                echo "</form>"; // close form
-                            } else {
-                                // other's message
-                                echo "<div class='message-post'>";
-                                echo "<div class='name'>$name</div>";
-                                echo "<div class='text'>$msg</div>";
-                            }
-                            echo "</div>"; // close message-self or message-post
-                        } else { // recalled
-                            if ($_SESSION['name'] === $msgs['name']) {
-                                // self message
-                                echo "<div class='message-self'>";
-                                echo "<div class='name-self'>$name</div>";
-                            } else {
-                                // other's message
-                                echo "<div class='message-post'>";
-                                echo "<div class='name'>$name</div>";
-                            }
-
-                            echo '<div class="text" style="color: gray;">[訊息已收回]</div>';
-                            echo "</div>"; // close message-post
+                <?php
+                foreach ($data as $msgs) {
+                    $name = htmlentities($msgs['name']);
+                    $msg = isset($msgs['message']) ? htmlentities($msgs['message']) : 'No message'; // check have message or not
+            
+                    if ($msgs['bool'] === 1) { // unrecalled
+                        if ($_SESSION['name'] === $msgs['name']) {
+                            // self message
+                            echo "<div class='message-self'>";
+                            echo "<form method='POST' action='recall_message.php' class='text-form'>";
+                            echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
+                            echo "<div class='name-self'>$name</div>";
+                            echo "<div class='text'>$msg</div>";
+                            echo '<button type="submit">收回</button>';
+                            echo "</form>"; // close form
+                        } else {
+                            // other's message
+                            echo "<div class='message-post'>";
+                            echo "<div class='name'>$name</div>";
+                            echo "<div class='text'>$msg</div>";
                         }
-                    }
-                    ?>
-                </div>
-                <div class="input-area">
-                    <form method="POST">
-                        <div class="messageBox">
-                            <div class="fileUploadWrapper">
-                            </div>
-                            <input id="message" name="messenger" type="text" placeholder="Message..." required="" />
-                            <button id="send-btn" type="submit">
-                                <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                                        fill="none"></path>
-                                    <path
-                                        d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                                        stroke="#6c6c6c" stroke-width="33.67" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                        echo "</div>"; // close message-self or message-post
+                    } else { // recalled
+                        if ($_SESSION['name'] === $msgs['name']) {
+                            // self message
+                            echo "<div class='message-self'>";
+                            echo "<div class='name-self'>$name</div>";
+                        } else {
+                            // other's message
+                            echo "<div class='message-post'>";
+                            echo "<div class='name'>$name</div>";
+                        }
 
-            <div class="container">
-                <form method="POST" action="logout.php">
-                    <button class="logout" type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
-                        </svg>
-                        <div class="logout-text">
-                            Logout
+                        echo '<div class="text" style="color: gray;">[訊息已收回]</div>';
+                        echo "</div>"; // close message-post
+                    }
+                }
+                ?>
+            </div>
+            <div class="input-area">
+                <form method="POST">
+                    <div class="messageBox">
+                        <div class="fileUploadWrapper">
                         </div>
-                    </button>
+                        <input id="message" name="messenger" type="text" placeholder="Message..." required="" />
+                        <button id="send-btn" type="submit">
+                            <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                                    fill="none"></path>
+                                <path
+                                    d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                                    stroke="#6c6c6c" stroke-width="33.67" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
-        <!--unlock page end-->
-    <?php } ?>
 
-    <script>
-        // forbin any rolling
-        document.body.addEventListener('touchmove', function (event) {
-            event.preventDefault();
-        }, { passive: false });
+        <div class="container">
+            <form method="POST" action="logout.php">
+                <button class="logout" type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
+                    </svg>
+                    <div class="logout-text">
+                        Logout
+                    </div>
+                </button>
+            </form>
+        </div>
+    </div>
+    <!--unlock page end-->
+<?php } ?>
 
-        // allow .chat-box rolling
-        const chatBox = document.querySelector('.chat-box');
-        chatBox.addEventListener('touchmove', function (event) {
-            event.stopPropagation();
-        }, { passive: false });
+<script>
+    const ws = new WebSocket('ws://localhost:8080/chat');
 
-    </script>
-    </body>
+    // 當 WebSocket 連線建立時
+    ws.onopen = function () {
+        console.log('WebSocket connected');
+    };
+
+    // 當收到 WebSocket 訊息時
+    ws.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const chatContainer = document.querySelector('.chat-container');
+        const newMessage = document.createElement('div');
+        newMessage.className = data.name === '<?= $_SESSION['name'] ?>' ? 'message-self' : 'message-post';
+        newMessage.innerHTML = `
+        <div class="name">${data.name}</div>
+        <div class="text">${data.message}</div>
+        <div class="time">${data.time}</div>
+    `;
+        chatContainer.appendChild(newMessage);
+        chatContainer.scrollTop = chatContainer.scrollHeight; // 自動捲到底部
+    };
+
+    // 當按下送出按鈕時
+    const form = document.querySelector('.input-area form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const messageInput = document.querySelector('#message');
+        const message = messageInput.value;
+
+        if (message) {
+            ws.send(JSON.stringify({
+                type: 'message',
+                name: '<?= $_SESSION['name'] ?>',
+                message: message,
+                time: new Date().toISOString()
+            }));
+            messageInput.value = ''; // 清空輸入框
+        }
+    });
+    // forbin any rolling
+    document.body.addEventListener('touchmove', function (event) {
+        event.preventDefault();
+    }, { passive: false });
+
+    // allow .chat-box rolling
+    const chatBox = document.querySelector('.chat-container');
+    chatBox.addEventListener('touchmove', function (event) {
+        event.stopPropagation();
+    }, { passive: false });
+
+</script>
+</body>
 
 </html>
