@@ -130,9 +130,8 @@ body {
 }
 
 .chat-box {
-    -webkit-overflow-scrolling: touch;
-    /* 啟用慣性滾動 */
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     /*background: url('https://live.staticflickr.com/4753/25790223907_9ea3e63180_b.jpg') no-repeat center center;*/
     background-size: cover;
     flex-grow: 1;
@@ -199,6 +198,7 @@ textarea {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     position: relative;
     margin-right: auto;
+    color: #000000;
 }
 
 .name {
@@ -232,14 +232,16 @@ textarea {
 }
 
 .text-self {
-    background-color: rgba(52, 152, 219, 0.2);
+    background-color: rgba(52, 152, 219, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 15px;
     padding: 15px;
-    max-width: 100%;
+    margin: 15px 0;
+    max-width: 80%;
     word-wrap: break-word;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     display: inline-block;
+    position: relative;
 }
 
 .text-form {
@@ -248,8 +250,6 @@ textarea {
     align-items: flex-end;
     margin: 0;
 }
-
-
 
 /* send area */
 .messageBox {

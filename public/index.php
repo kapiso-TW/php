@@ -110,7 +110,7 @@ $page = $_SESSION['page']; // ensure page correct
                             echo "<form method='POST' action='recall_message.php' class='text-form'>";
                             echo "<input type='hidden' name='time' value='" . htmlentities($msgs['time']) . "'>";
                             echo "<div class='name-self'>$name</div>";
-                            echo "<div class='text'>$msg</div>";
+                            echo "<div class='text-self'>$msg</div>";
                             echo '<button type="submit">收回</button>';
                             echo "</form>"; // close form
                         } else {
@@ -178,12 +178,12 @@ $page = $_SESSION['page']; // ensure page correct
 <?php } ?>
 
 <script>
-    // forbin any rolling
     document.body.addEventListener('touchmove', function (event) {
-        event.preventDefault();
+        if (!chatBox.contains(event.target)) {
+            event.preventDefault();
+        }
     }, { passive: false });
 
-    // allow .chat-box rolling
     const chatBox = document.querySelector('.chat-container');
     chatBox.addEventListener('touchmove', function (event) {
         event.stopPropagation();
